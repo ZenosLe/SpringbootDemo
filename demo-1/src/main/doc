@@ -1,0 +1,20 @@
+JPA: nó sẽ theo 1 flow nhất định
+Entity: nó tụa như 1 bảng trong CDSL
+    - thay vì tự tạo bảng, tự viết thì sử dụng @Entity
+
+repository: nó sẽ là interface đồng thời nó sẽ tương tác với CSDL (insert, join,...)
+
+service: nó sẽ sử lý các thao tác
+
+controller: gọi các hàm trong SERVICE lên để sử dụng
+
+                        Entity
+                          |
+                          |
+                      Repository
+                          |
+                          |
+                       Service
+                          |
+                          |
+                      Controller
