@@ -1,9 +1,12 @@
 package com.zeniusLe.demo1.dto.request;
 
+import jakarta.validation.constraints.Size;
+
 import java.util.Date;
 
 public class UserCreateRequest {
     private String name;
+    @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
     private String email;
     private String phone;
