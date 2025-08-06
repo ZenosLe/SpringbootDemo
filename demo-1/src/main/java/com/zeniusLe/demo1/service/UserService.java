@@ -1,8 +1,10 @@
 package com.zeniusLe.demo1.service;
 
+import com.zeniusLe.demo1.NormallizeApiResponse.ErrorCode;
 import com.zeniusLe.demo1.dto.request.UserCreateRequest;
 import com.zeniusLe.demo1.dto.request.UserUpdateRequest;
 import com.zeniusLe.demo1.entity.User;
+import com.zeniusLe.demo1.exceptions.AppExceptions;
 import com.zeniusLe.demo1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ public class UserService {
         User user = new User();
 
         if (userRepository.existsByName(request.getName()))
-            throw new RuntimeException("Username already exists");
+            throw new AppExceptions(ErrorCode.USER_EXISTED);
 
         user.setName(request.getName());
         user.setPassword(request.getPassword());

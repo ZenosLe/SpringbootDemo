@@ -1,9 +1,11 @@
 package com.zeniusLe.demo1.Controller;
 
+import com.zeniusLe.demo1.NormallizeApiResponse.ApiResponse;
 import com.zeniusLe.demo1.dto.request.UserCreateRequest;
 import com.zeniusLe.demo1.dto.request.UserUpdateRequest;
 import com.zeniusLe.demo1.entity.User;
 import com.zeniusLe.demo1.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,10 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    User createUser(@RequestBody UserCreateRequest requestUser){
-        return userService.CreateUser(requestUser);
+    ApiResponse<User> createUser(@RequestBody @Valid UserCreateRequest requestUser){
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+        apiResponse.setData(userService.CreateUser(requestUser));
+        return apiResponse;
     }
 
     @GetMapping

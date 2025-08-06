@@ -1,9 +1,13 @@
 package com.zeniusLe.demo1.dto.request;
 
+import jakarta.validation.constraints.Size;
+
 import java.util.Date;
 
 public class UserCreateRequest {
     private String name;
+                // message này phải giống biến Enum trong ErrorCode.java
+    @Size(min = 8, message = "INVALID_PASSWORD") // đây là validation
     private String password;
     private String email;
     private String phone;
