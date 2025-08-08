@@ -1,35 +1,21 @@
 package com.zeniusLe.demo1.NormallizeApiResponse;
 
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+
 public class ApiResponse <T>{
     // lớp này dùng để chuẩn hóa các lỗi khi Response
     // chứa tất cả các lỗi từ 101,102....
     // <T> : thay đổi tùy thuộc từng API
-    private int code = 1000;
-    private String message;
-    private T data;
+     int code = 1000;
+     String message;
+     T data;
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 }
 
