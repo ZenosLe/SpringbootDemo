@@ -3,6 +3,8 @@ package com.zeniusLe.demo1.NormallizeApiResponse;
 public enum ErrorCode {
         USER_EXISTED(1001, "User already existed"),
         INVALID_PASSWORD(1002, "Password must be at least 8 characters"),
+        USER_NOT_EXISTED(1003, "User not existed"),
+        AUTHENTICATED(1004, "Un Authenticated"),
         ;
 
         private int code;
