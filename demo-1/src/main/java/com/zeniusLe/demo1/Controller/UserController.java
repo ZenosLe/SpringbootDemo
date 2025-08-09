@@ -3,6 +3,7 @@ package com.zeniusLe.demo1.Controller;
 import com.zeniusLe.demo1.NormallizeApiResponse.ApiResponse;
 import com.zeniusLe.demo1.dto.request.UserCreateRequest;
 import com.zeniusLe.demo1.dto.request.UserUpdateRequest;
+import com.zeniusLe.demo1.dto.response.UserResponse;
 import com.zeniusLe.demo1.entity.User;
 import com.zeniusLe.demo1.service.UserService;
 import jakarta.validation.Valid;
@@ -30,12 +31,12 @@ public class UserController {
     }
 
     @GetMapping("/{userID}")
-    User findById(@PathVariable("userID") String userID){
+    UserResponse findById(@PathVariable("userID") String userID){
         return userService.getUserById(userID);
     }
 
     @PutMapping("/{userID}")
-    User updateUser(@PathVariable String userID, @RequestBody UserUpdateRequest requestUser){
+    UserResponse updateUser(@PathVariable String userID, @RequestBody UserUpdateRequest requestUser){
         return userService.UpdateUser(userID,requestUser);
     }
 
