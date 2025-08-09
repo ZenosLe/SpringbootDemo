@@ -9,6 +9,8 @@ import com.zeniusLe.demo1.entity.User;
 import com.zeniusLe.demo1.exceptions.AppExceptions;
 import com.zeniusLe.demo1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,8 +26,10 @@ public class UserService {
         // lấy hàm kiểm tra từ userRepository để check
         if (userRepository.existsByName(request.getName()))
             throw new AppExceptions(ErrorCode.USER_EXISTED);
-
         User user = userMapper.toUser(request);
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);
     }

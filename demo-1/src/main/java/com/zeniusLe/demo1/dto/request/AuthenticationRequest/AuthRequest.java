@@ -1,0 +1,14 @@
+package com.zeniusLe.demo1.dto.request.AuthenticationRequest;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class AuthRequest {
+    String name;
+    String password;
+}
