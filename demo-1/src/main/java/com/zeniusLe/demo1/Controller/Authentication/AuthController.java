@@ -1,8 +1,11 @@
 package com.zeniusLe.demo1.Controller.Authentication;
 
+import com.nimbusds.jose.JOSEException;
 import com.zeniusLe.demo1.NormallizeApiResponse.ApiResponse;
 import com.zeniusLe.demo1.dto.request.AuthenticationRequest.AuthRequest;
+import com.zeniusLe.demo1.dto.request.AuthenticationRequest.introspectRequest;
 import com.zeniusLe.demo1.dto.response.AuthenticationResponse.AuthResponse;
+import com.zeniusLe.demo1.dto.response.AuthenticationResponse.introspectResponse;
 import com.zeniusLe.demo1.service.AuthenticationService.AuthService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,6 +37,15 @@ public class AuthController {
     ApiResponse<AuthResponse> authenticate(@RequestBody AuthRequest authRequest){
         var res = authService.authenticate(authRequest);
         return ApiResponse.<AuthResponse>builder()
+                .data(res)
+                .build();
+    }
+
+    @PostMapping("/introspect")
+    ApiResponse<introspectResponse> authenticate(@RequestBody introspectRequest introRequest)
+            throws ParseException, JOSEException {
+        var res = authService.introspect(introRequest);
+        return ApiResponse.<introspectResponse>builder()
                 .data(res)
                 .build();
     }
