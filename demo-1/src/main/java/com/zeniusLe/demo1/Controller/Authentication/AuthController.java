@@ -23,7 +23,7 @@ import java.text.ParseException;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthController {
     AuthService authService;
-    @PostMapping("/login")
+//    @PostMapping("/token")
             // cũ (không sử dụng JWT)
 //    ApiResponse<AuthResponse> authenticate(@RequestBody AuthRequest authRequest){
 //        boolean res = authService.authenticate(authRequest);
@@ -34,6 +34,7 @@ public class AuthController {
 //                .build();
 //    }
             // Update (Sử dụng JWT)
+    @PostMapping("/token")
     ApiResponse<AuthResponse> authenticate(@RequestBody AuthRequest authRequest){
         var res = authService.authenticate(authRequest);
         return ApiResponse.<AuthResponse>builder()
@@ -41,6 +42,7 @@ public class AuthController {
                 .build();
     }
 
+    // verified token
     @PostMapping("/introspect")
     ApiResponse<introspectResponse> authenticate(@RequestBody introspectRequest introRequest)
             throws ParseException, JOSEException {
