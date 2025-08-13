@@ -3,6 +3,7 @@ package com.zeniusLe.demo1.exceptions;
 import com.zeniusLe.demo1.NormallizeApiResponse.ApiResponse;
 import com.zeniusLe.demo1.NormallizeApiResponse.ErrorCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,7 +26,22 @@ public class ExceptionHandle {
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage());
 
-        return ResponseEntity.badRequest().body(apiResponse); // trả về nội dung muốn cần
+        return ResponseEntity
+                .status(errorCode.getStatusCode()) // trả về HttpStatusCode thay vì là bad_Request
+                .body(apiResponse); // trả về nội dung muốn cần
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class) // lỗi này là 403
+    // nếu như có AccessDeniedException xảy ra => được sử lý bởi handle này
+    ResponseEntity<ApiResponse> handleAccessDeniedException(AccessDeniedException exception){
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(
+                ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build()
+        );
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)

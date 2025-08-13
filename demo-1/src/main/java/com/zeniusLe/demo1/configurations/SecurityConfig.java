@@ -56,10 +56,10 @@ public class SecurityConfig {
 
         // cung cấp JWT token
         httpSecutiry.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer
-                        -> jwtConfigurer.decoder(jwtDecoder())// sử dụng JwtDecoder để kiểm tra
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                )
+                oauth2.jwt(jwtConfigurer ->
+                        jwtConfigurer.decoder(jwtDecoder())// sử dụng JwtDecoder để kiểm tra
+                            .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
 
         );
 
