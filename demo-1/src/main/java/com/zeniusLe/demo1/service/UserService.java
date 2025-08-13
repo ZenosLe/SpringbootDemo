@@ -10,6 +10,9 @@ import com.zeniusLe.demo1.entity.User;
 import com.zeniusLe.demo1.exceptions.AppExceptions;
 import com.zeniusLe.demo1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,13 +45,16 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')") // kiểm tra role trước sau đó mới gọi method
+    // PreAuthorize thường được dùng để kiểm tra ROLE
     public List<UserResponse> getAllUsers(){
         List<User> users = userRepository.findAll();
         return users.stream().map(user ->
                 userMapper.toUserResponse(user)).collect(Collectors.toList());
     }
 
+    @PostAuthorize("returnObject.name ==     authentication.name") // gọi method trước sau đó mới kiểm tra role
+    // PostAuthorize thường được dùng để lấy thông tin của chính user đó
     public UserResponse getUserById(String id){
         return userMapper.toUserResponse(userRepository.findById(id).
                 orElseThrow(() -> new RuntimeException("Not found User")));
@@ -65,5 +71,13 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public UserResponse getMyInfor(){
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
 
+        User user = userRepository.findByUsername(name).orElseThrow(()
+                -> new AppExceptions(ErrorCode.USER_NOT_EXISTED));
+
+        return  userMapper.toUserResponse(user);
+    }
 }

@@ -55,4 +55,12 @@ public class UserController {
     void deleteById(@PathVariable("userID") String userID){
        userService.DeleteUserById(userID);
     }
+
+    @GetMapping("/myInfor")
+    ApiResponse<UserResponse> getMyInfor(){
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.getMyInfor())
+                .build();
+    }
+
 }

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity // phân quyền bằng method => phổ biến hơn => dùng PreAuthorize và PostAuthorize
 public class SecurityConfig {
     // đây là danh sách chứa các endpoint
     private final String[] PUBLIC_END_POINTS = {"/user",
@@ -48,8 +50,8 @@ public class SecurityConfig {
                 //public các endpoint này mà không cần có sự allow
                 req.requestMatchers(HttpMethod.POST, PUBLIC_END_POINTS).permitAll()
                         // những endpoint user nào có SCOPE_ADMIN thì mới get được users
-                        .requestMatchers(HttpMethod.GET, "/user")
-                        .hasAuthority(role.ADMIN.name())
+//                        .requestMatchers(HttpMethod.GET, "/user")
+//                        .hasAuthority(role.ADMIN.name())
                             .anyRequest().authenticated()); // tất cả các endpoint khác cần phải có sự allow, có token
 
         // cung cấp JWT token
