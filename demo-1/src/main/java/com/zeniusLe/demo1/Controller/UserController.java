@@ -7,11 +7,14 @@ import com.zeniusLe.demo1.dto.response.UserResponse;
 import com.zeniusLe.demo1.entity.User;
 import com.zeniusLe.demo1.service.UserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -19,15 +22,23 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    ApiResponse<User> createUser(@RequestBody @Valid UserCreateRequest requestUser){
-        ApiResponse<User> apiResponse = new ApiResponse<>();
-        apiResponse.setData(userService.CreateUser(requestUser));
-        return apiResponse;
+    ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreateRequest requestUser){
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.CreateUser(requestUser))
+                .build();
     }
 
     @GetMapping
-    List<User> findAll(){
-        return userService.findAll();
+    ApiResponse<List<UserResponse>> getAllUser(){
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("User Name: {}", authentication.getName());
+        authentication.getAuthorities().forEach(authority
+                -> log.info(authority.getAuthority()));
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .data(userService.getAllUsers())
+                .build();
     }
 
     @GetMapping("/{userID}")

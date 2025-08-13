@@ -5,6 +5,7 @@ import com.zeniusLe.demo1.NormallizeApiResponse.ErrorCode;
 import com.zeniusLe.demo1.dto.request.UserCreateRequest;
 import com.zeniusLe.demo1.dto.request.UserUpdateRequest;
 import com.zeniusLe.demo1.dto.response.UserResponse;
+import com.zeniusLe.demo1.enums.role;
 import com.zeniusLe.demo1.entity.User;
 import com.zeniusLe.demo1.exceptions.AppExceptions;
 import com.zeniusLe.demo1.repository.UserRepository;
@@ -13,7 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -22,7 +25,7 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public User CreateUser(UserCreateRequest request){
+    public UserResponse CreateUser(UserCreateRequest request){
         // lấy hàm kiểm tra từ userRepository để check
         if (userRepository.existsByName(request.getName()))
             throw new AppExceptions(ErrorCode.USER_EXISTED);
@@ -31,12 +34,19 @@ public class UserService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        return userRepository.save(user);
+        HashSet<String> roles = new HashSet<>();
+        roles.add(role.USER.name()); // mặc đinh khi tạo tài khoản thì sẽ là user
+
+        user.setRoles(roles);
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
 
-    public List<User> findAll(){
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers(){
+        List<User> users = userRepository.findAll();
+        return users.stream().map(user ->
+                userMapper.toUserResponse(user)).collect(Collectors.toList());
     }
 
     public UserResponse getUserById(String id){

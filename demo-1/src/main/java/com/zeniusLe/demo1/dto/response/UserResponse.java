@@ -1,5 +1,7 @@
 package com.zeniusLe.demo1.dto.response;
 import java.util.Date;
+import java.util.Set;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,4 +17,5 @@ public class UserResponse {
     String email;
     String phone;
     Date birthday;
+    Set<String> roles;
 }

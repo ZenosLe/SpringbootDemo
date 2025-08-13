@@ -11,6 +11,7 @@ import com.zeniusLe.demo1.dto.request.AuthenticationRequest.introspectRequest;
 import com.zeniusLe.demo1.dto.response.AuthenticationResponse.AuthResponse;
 import com.zeniusLe.demo1.dto.response.AuthenticationResponse.introspectResponse;
 import com.zeniusLe.demo1.dto.response.UserResponse;
+import com.zeniusLe.demo1.entity.User;
 import com.zeniusLe.demo1.exceptions.AppExceptions;
 import com.zeniusLe.demo1.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -25,11 +26,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Slf4j
 @Service
@@ -76,7 +79,7 @@ public class AuthService {
             throw new AppExceptions(ErrorCode.AUTHENTICATED);
         }
 
-        var token = genarateToken(authRequest.getName());
+        var token = genarateToken(user);
         return AuthResponse.builder()
                 .tokenJWT(token)
                 .authenticated(true)
@@ -84,17 +87,18 @@ public class AuthService {
     }
 
     // hàm generate token
-    private String genarateToken(String username) {
+    private String genarateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)// đại diện cho user name đăng nhập
+                .subject(user.getName())// đại diện cho user name đăng nhập
                 .issuer("zeniusLe.com")// xác đinh được token này được cấp phát từ ai
                 // thông thường là domain sever
                 .issueTime(new Date())// dùng để lấy thời điểm hiện tại
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 )) // dùng để xác đinh thời hạn của token này
+                .claim("scope", buildScope(user))
                 .build();
         Payload payLoad = new Payload(jwtClaimsSet.toJSONObject());
 
@@ -107,5 +111,13 @@ public class AuthService {
             log.error("cant create token", e);
             throw new RuntimeException(e);
         }
+    }
+
+    private String buildScope(User user) {
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
+            user.getRoles().forEach(role -> stringJoiner.add(role));
+        }
+        return stringJoiner.toString();
     }
 }

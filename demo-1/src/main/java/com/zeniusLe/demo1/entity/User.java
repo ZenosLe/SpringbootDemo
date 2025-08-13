@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -16,11 +17,11 @@ import java.util.Date;
 public class User {
     @Id // dùng để đánh dấu khóa chính
     @GeneratedValue(strategy = GenerationType.UUID)
-
     String id;
     String name;
     String password;
     String email;
     String phone;
     Date birthday;
+    Set<String> roles;
 }
